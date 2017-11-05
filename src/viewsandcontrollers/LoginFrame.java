@@ -115,7 +115,7 @@ public class LoginFrame extends javax.swing.JFrame {
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chkGuest)
                     .addComponent(btnLogin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(42, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -157,26 +157,28 @@ public class LoginFrame extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         // TODO add your handling code here:
 
-        String user = txtUser.getText();
-        String pass = new String(txtPass.getPassword());
-
-        boolean valid = validLogic(user, pass);
         if (!isGuest) {
-            if (valid) {
+            String user = txtUser.getText();
+            String pass = new String(txtPass.getPassword());
+            if (validLogic(user, pass)) {
                 UserDAO dao = new UserDAO();
                 String role = dao.login(user, pass);
                 switch (role) {
                     case "failed":
-//                        JOptionPane.showMessageDialog(null, "Invalid User");
                         util.Message.showMessage("Login Failed\n"
                                 + "Please try again your username & password\n"
+                                + "REMEMBER : You still can use my program as Guest");
+                        return;
+                    case "not activated":
+                        util.Message.showMessage("Login Failed\n"
+                                + "Your account haven't activated\n"
                                 + "REMEMBER : You still can use my program as Guest");
                         return;
                     case "Administrator":
                         new AdminFrame(user).setVisible(true);
                         break;
-                    case "Guest":
-                        new GuestFrame().setVisible(true);
+                    case "Editor":
+                        new EditorFrame(user).setVisible(true);
                         break;
                 }
             }

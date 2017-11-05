@@ -5,31 +5,30 @@
  */
 package viewsandcontrollers;
 
-import Comparator.AlphabetComparator;
-import Comparator.PriceComparator;
-import util.ImageLoader;
-import daos.LapTopDAO;
-import dtos.LaptopDTO;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
+import util.*;
+import Comparator.*;
+import java.util.*;
+import daos.*;
+import dtos.*;
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author DuongPTH
  */
-public class GuestFrame extends javax.swing.JFrame {
+public class EditorFrame extends javax.swing.JFrame {
 
     DefaultTableModel model = null;
     LapTopDAO dao = null;
+    String urlImg;
+    String account;
 
     /**
      * Creates new form Guest
      */
-    public GuestFrame() {
+    public EditorFrame() {
         initComponents();
 
         model = (DefaultTableModel) tblList.getModel();
@@ -38,13 +37,21 @@ public class GuestFrame extends javax.swing.JFrame {
 
     }
 
+    public EditorFrame(String user) {
+        initComponents();
+        account = new String(user);
+        lblUser.setText(account);
+
+        model = (DefaultTableModel) tblList.getModel();
+        dao = new LapTopDAO();
+        refreshTable("");
+    }
+
     private void refreshTable(String request) {
         model.setRowCount(0);
         List<LaptopDTO> result = dao.showTable(request);
         for (LaptopDTO laptopDTO : result) {
-            if (!laptopDTO.isDeleted()) {
-                model.addRow(laptopDTO.toVector());
-            }
+            model.addRow(laptopDTO.toVector());
         }
     }
 
@@ -52,9 +59,7 @@ public class GuestFrame extends javax.swing.JFrame {
         model.setRowCount(0);
         List<LaptopDTO> result = tbl;
         for (LaptopDTO laptopDTO : result) {
-            if (!laptopDTO.isDeleted()) {
-                model.addRow(laptopDTO.toVector());
-            }
+            model.addRow(laptopDTO.toVector());
         }
     }
 
@@ -89,12 +94,13 @@ public class GuestFrame extends javax.swing.JFrame {
         sort = new javax.swing.ButtonGroup();
         pnlTile = new javax.swing.JPanel();
         label1 = new java.awt.Label();
+        lblUser = new javax.swing.JLabel();
         btnLogOut = new javax.swing.JButton();
         pnlTbl = new javax.swing.JScrollPane();
         tblList = new javax.swing.JTable();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         pnlDetail = new javax.swing.JPanel();
-        onlImg = new javax.swing.JPanel();
+        pnlImg = new javax.swing.JPanel();
         lblImg = new javax.swing.JLabel();
         pnlInfo = new javax.swing.JPanel();
         txtBrand = new javax.swing.JTextField();
@@ -123,6 +129,11 @@ public class GuestFrame extends javax.swing.JFrame {
         chkSB = new javax.swing.JCheckBox();
         chkIA = new javax.swing.JCheckBox();
         chkGD = new javax.swing.JCheckBox();
+        pnlAdmin = new javax.swing.JPanel();
+        chkDelete = new javax.swing.JCheckBox();
+        btnEditImg = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnInsert = new javax.swing.JButton();
         pnlFeature = new javax.swing.JPanel();
         pnlSearch = new javax.swing.JPanel();
         pnlInfoSearch = new javax.swing.JPanel();
@@ -161,14 +172,28 @@ public class GuestFrame extends javax.swing.JFrame {
         rdnAscPrice = new javax.swing.JRadioButton();
         rdnDecPrice = new javax.swing.JRadioButton();
         btnSort = new javax.swing.JButton();
+        pnlManagerment = new javax.swing.JPanel();
+        pnlPassword = new javax.swing.JPanel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jPasswordField1 = new javax.swing.JPasswordField();
+        jPasswordField2 = new javax.swing.JPasswordField();
+        jPasswordField3 = new javax.swing.JPasswordField();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1178, 533));
         setResizable(false);
 
+        pnlTile.setMaximumSize(new java.awt.Dimension(978, 100));
+        pnlTile.setMinimumSize(new java.awt.Dimension(978, 100));
+
         label1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         label1.setFont(new java.awt.Font("Dialog", 3, 36)); // NOI18N
-        label1.setText("Welcome, GUEST");
+        label1.setText("Welcome,");
+
+        lblUser.setFont(new java.awt.Font("Tahoma", 3, 48)); // NOI18N
 
         btnLogOut.setFont(new java.awt.Font("Tahoma", 3, 24)); // NOI18N
         btnLogOut.setText("Log out");
@@ -184,9 +209,11 @@ public class GuestFrame extends javax.swing.JFrame {
             pnlTileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlTileLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblUser, javax.swing.GroupLayout.PREFERRED_SIZE, 760, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnlTileLayout.setVerticalGroup(
@@ -196,6 +223,7 @@ public class GuestFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(btnLogOut, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(lblUser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         tblList.setModel(new javax.swing.table.DefaultTableModel(
@@ -239,35 +267,20 @@ public class GuestFrame extends javax.swing.JFrame {
 
         pnlDetail.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createTitledBorder(null, "Laptop's Detail", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14)))); // NOI18N
 
-        onlImg.setBorder(javax.swing.BorderFactory.createTitledBorder("Image"));
-        onlImg.setPreferredSize(new java.awt.Dimension(300, 300));
-        onlImg.setLayout(new java.awt.BorderLayout());
-        onlImg.add(lblImg, java.awt.BorderLayout.CENTER);
+        pnlImg.setBorder(javax.swing.BorderFactory.createTitledBorder("Image"));
+        pnlImg.setPreferredSize(new java.awt.Dimension(300, 300));
+        pnlImg.setLayout(new java.awt.BorderLayout());
+        pnlImg.add(lblImg, java.awt.BorderLayout.CENTER);
 
         pnlInfo.setBorder(javax.swing.BorderFactory.createTitledBorder("Main Infor"));
 
-        txtBrand.setEditable(false);
-
-        txtSerial.setEditable(false);
-
-        txtChipset.setEditable(false);
-
-        txtChipsetSerial.setEditable(false);
-
-        txtRAMType.setEditable(false);
-
-        txtRAMCapacity.setEditable(false);
-
-        txtHDDCapacity.setEditable(false);
-
-        txtScreen.setEditable(false);
-
-        txtGraphicCard.setEditable(false);
-
-        txtPrice.setEditable(false);
+        txtBrand.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtBrandActionPerformed(evt);
+            }
+        });
 
         chkDVD.setText("DVD reader");
-        chkDVD.setEnabled(false);
 
         jLabel1.setText("Brand");
 
@@ -279,15 +292,15 @@ public class GuestFrame extends javax.swing.JFrame {
 
         jLabel5.setText("RAM Type");
 
-        jLabel6.setText("RAM Capacity");
+        jLabel6.setText("RAM Capacity(GB)");
 
-        jLabel7.setText("HDD Capacity");
+        jLabel7.setText("HDD Capacity(GB)");
 
-        jLabel8.setText("Screen");
+        jLabel8.setText("Screen(Inch)");
 
         jLabel9.setText("Graphic Card");
 
-        jLabel10.setText("Price");
+        jLabel10.setText("Price (thousand vnd)");
 
         javax.swing.GroupLayout pnlInfoLayout = new javax.swing.GroupLayout(pnlInfo);
         pnlInfo.setLayout(pnlInfoLayout);
@@ -374,25 +387,51 @@ public class GuestFrame extends javax.swing.JFrame {
         pnlMajor.setLayout(new java.awt.GridLayout(1, 0));
 
         chkSE.setText("Software Engineering");
-        chkSE.setEnabled(false);
         pnlMajor.add(chkSE);
 
         chkSB.setText("International Bussiness");
-        chkSB.setEnabled(false);
         pnlMajor.add(chkSB);
 
         chkIA.setText("Information Assurance");
-        chkIA.setEnabled(false);
         pnlMajor.add(chkIA);
 
         chkGD.setText("Graphic Design");
-        chkGD.setEnabled(false);
         chkGD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkGDActionPerformed(evt);
             }
         });
         pnlMajor.add(chkGD);
+
+        pnlAdmin.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Administrator Function", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
+        pnlAdmin.setLayout(new java.awt.GridLayout(1, 0));
+
+        chkDelete.setText("Deleted");
+        pnlAdmin.add(chkDelete);
+
+        btnEditImg.setText("Edit Image");
+        btnEditImg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditImgActionPerformed(evt);
+            }
+        });
+        pnlAdmin.add(btnEditImg);
+
+        btnUpdate.setText("Update");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+        pnlAdmin.add(btnUpdate);
+
+        btnInsert.setText("Insert");
+        btnInsert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnInsertActionPerformed(evt);
+            }
+        });
+        pnlAdmin.add(btnInsert);
 
         javax.swing.GroupLayout pnlDetailLayout = new javax.swing.GroupLayout(pnlDetail);
         pnlDetail.setLayout(pnlDetailLayout);
@@ -403,9 +442,10 @@ public class GuestFrame extends javax.swing.JFrame {
                 .addGroup(pnlDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlMajor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnlDetailLayout.createSequentialGroup()
-                        .addComponent(onlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(pnlInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlDetailLayout.setVerticalGroup(
@@ -414,10 +454,12 @@ public class GuestFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(onlImg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnlImg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlMajor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Laptop's Detail", pnlDetail);
@@ -668,6 +710,87 @@ public class GuestFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Feature", pnlFeature);
 
+        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
+
+        jLabel23.setText("Old Password");
+
+        jLabel24.setText("New Password");
+
+        jLabel25.setText("Confirm new Password");
+
+        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPasswordField1ActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("OK");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlPasswordLayout = new javax.swing.GroupLayout(pnlPassword);
+        pnlPassword.setLayout(pnlPasswordLayout);
+        pnlPasswordLayout.setHorizontalGroup(
+            pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasswordLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPasswordField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPasswordField3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlPasswordLayout.setVerticalGroup(
+            pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasswordLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPasswordLayout.createSequentialGroup()
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel23)
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24)
+                            .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel25)
+                            .addComponent(jPasswordField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout pnlManagermentLayout = new javax.swing.GroupLayout(pnlManagerment);
+        pnlManagerment.setLayout(pnlManagermentLayout);
+        pnlManagermentLayout.setHorizontalGroup(
+            pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlManagermentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlManagermentLayout.setVerticalGroup(
+            pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlManagermentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(363, Short.MAX_VALUE))
+        );
+
+        jTabbedPane1.addTab("User's Managerment", pnlManagerment);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -689,7 +812,7 @@ public class GuestFrame extends javax.swing.JFrame {
                 .addComponent(pnlTile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlTbl, javax.swing.GroupLayout.DEFAULT_SIZE, 586, Short.MAX_VALUE)
+                    .addComponent(pnlTbl)
                     .addComponent(jTabbedPane1))
                 .addContainerGap())
         );
@@ -697,17 +820,9 @@ public class GuestFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void chkGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_chkGDActionPerformed
-
     private void tblListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMouseClicked
         // TODO add your handling code here:
         int row = tblList.getSelectedRow();
-//        pnlDetail.
-//        pnlFeature.setVisible(false);
-//        btnSearch.setVisible(false);
-//        btnSort.setVisible(false);
         LaptopDTO dto = dao.getLaptopByRow(row);
 
         txtBrand.setText(dto.getBrand());
@@ -726,18 +841,25 @@ public class GuestFrame extends javax.swing.JFrame {
         chkSB.setSelected(dto.isForSB());
         chkIA.setSelected(dto.isForIA());
         chkGD.setSelected(dto.isForGD());
+        chkDelete.setSelected(dto.isDeleted());
+
+        urlImg = new String(dto.getImg());
 
         try {
-            ImageLoader.loadImage(dto.getImg(), lblImg);
+            ImageLoader.loadImage(urlImg, lblImg);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, "This Laptop temporary not have image");
+            util.Message.showMessage("This Laptop temporary does not have image");
         }
     }//GEN-LAST:event_tblListMouseClicked
 
-    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-        // TODO add your handling code here:
-
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
+    private String getImg(String serial) {
+        String img = "img\\" + serial + ".jpg";
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.showOpenDialog(this);
+        File file = fileChooser.getSelectedFile();
+        ImageLoader.saveImage(file, img);
+        return img;
+    }
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
         // TODO add your handling code here:
@@ -745,9 +867,32 @@ public class GuestFrame extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnLogOutActionPerformed
 
-    private void chkGDSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDSearchActionPerformed
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_chkGDSearchActionPerformed
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+    private void btnSortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSortActionPerformed
+        // TODO add your handling code here:
+
+        if (rdnName.isSelected()) {
+            //            refreshTable("Order by Brand, Serial");
+            sortAscByName();
+        } else if (rdnAscPrice.isSelected()) {
+            //            refreshTable("Order by Price ASC");
+            sortAscByPrice();
+        } else {
+            //            refreshTable("Order by Price DESC");
+            sortDesByPrice();
+        }
+    }//GEN-LAST:event_btnSortActionPerformed
+
+    private void rdnAscPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdnAscPriceActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rdnAscPriceActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         // TODO add your handling code here:
@@ -829,24 +974,215 @@ public class GuestFrame extends javax.swing.JFrame {
         util.Message.showMessage("Searched!\n" + dao.getList().size() + " Laptop found!");
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void rdnAscPriceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdnAscPriceActionPerformed
+    private void chkGDSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDSearchActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_rdnAscPriceActionPerformed
+    }//GEN-LAST:event_chkGDSearchActionPerformed
 
-    private void btnSortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSortActionPerformed
+    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         // TODO add your handling code here:
-
-        if (rdnName.isSelected()) {
-            //            refreshTable("Order by Brand, Serial");
-            sortAscByName();
-        } else if (rdnAscPrice.isSelected()) {
-            //            refreshTable("Order by Price ASC");
-            sortAscByPrice();
-        } else {
-            //            refreshTable("Order by Price DESC");
-            sortDesByPrice();
+        int price;
+        try {
+            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
         }
-    }//GEN-LAST:event_btnSortActionPerformed
+
+        String brand = txtBrand.getText().toUpperCase().trim();
+
+        if (!util.Tools.checkBrand(brand)) {
+            util.Message.showMessage("Invalid Brand");
+            return;
+        }
+
+        String chip = txtChipset.getText().toUpperCase().trim();
+        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
+        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
+
+        String hdd = txtHDDCapacity.getText();
+        try {
+            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ram = txtRAMCapacity.getText();
+        try {
+            if (!util.Tools.checkRAM(ram)) {
+            }
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ramType = txtRAMType.getText().toUpperCase().trim();
+        if (!util.Tools.checkRAMType(ramType)) {
+            util.Message.showMessage("RAM Type invalid : " + ramType
+                    + "\nOnly DDR4 or DDR3 accepted");
+            return;
+        }
+
+        String screen = txtScreen.getText().toUpperCase().trim();
+        if (!util.Tools.checkScreen(screen)) {
+            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
+            return;
+        }
+
+        String serial = txtSerial.getText().toUpperCase().trim();
+        if (util.Tools.isContain(dao.getList(), serial)) {
+            util.Message.showMessage("Serial already existed");
+            return;
+        }
+
+        String img = "img\\0.png";
+        int option = util.Message.confirmMessage("Do you wish to add this Laptop a picture?", "Upload Image?");
+        if (option == 0) {
+            btnEditImgActionPerformed(evt);
+            img = urlImg;
+        }
+
+        boolean dvd = chkDVD.isSelected();
+        boolean del = chkDelete.isSelected();
+        if (del) {
+            option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
+            if (option != 0) {
+                return;
+            }
+        }
+
+        boolean se = chkSE.isSelected();
+        boolean sb = chkSB.isSelected();
+        boolean ia = chkIA.isSelected();
+        boolean gd = chkGD.isSelected();
+        if (!se && !sb && !ia && !gd) {
+            util.Message.showMessage("Choose at least one Major");
+        }
+
+        boolean inserted = dao.insertNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
+        if (inserted) {
+            util.Message.showMessage("Insert Successfull, Reload List");
+            updateTable(dao.getList());
+        } else {
+            util.Message.showMessage("Update Failed. An error occur\n"
+                    + "CAUSTION REMEMBER : SERIAL MUST BE ALREADY EXISTED");
+        }
+    }//GEN-LAST:event_btnInsertActionPerformed
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        int price;
+        try {
+            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String brand = txtBrand.getText().toUpperCase().trim();
+        if (!util.Tools.checkBrand(brand)) {
+            util.Message.showMessage("Invalid Brand");
+            return;
+        }
+
+        String chip = txtChipset.getText().toUpperCase().trim();
+        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
+        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
+
+        String hdd = txtHDDCapacity.getText();
+        try {
+            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ram = txtRAMCapacity.getText();
+        try {
+            if (!util.Tools.checkRAM(ram)) {
+            }
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ramType = txtRAMType.getText().toUpperCase().trim();
+        if (!util.Tools.checkRAMType(ramType)) {
+            util.Message.showMessage("RAM Type invalid : " + ramType
+                    + "\nOnly DDR4 or DDR3 accepted");
+            return;
+        }
+
+        String screen = txtScreen.getText().toUpperCase().trim();
+        if (!util.Tools.checkScreen(screen)) {
+            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
+            return;
+        }
+
+        String serial = txtSerial.getText().toUpperCase().trim();
+        if (!util.Tools.isContain(dao.getList(), serial)) {
+            util.Message.showMessage("Serial is not existed. Cannot update");
+            return;
+        }
+
+        String img = urlImg;
+
+        boolean dvd = chkDVD.isSelected();
+        boolean del = chkDelete.isSelected();
+        if (del) {
+            int option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
+            if (option != 0) {
+                return;
+            }
+        }
+        boolean se = chkSE.isSelected();
+        boolean sb = chkSB.isSelected();
+        boolean ia = chkIA.isSelected();
+        boolean gd = chkGD.isSelected();
+        if (!se && !sb && !ia && !gd) {
+            util.Message.showMessage("Choose at least one Major");
+        }
+
+        boolean updated = dao.updateNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
+        if (updated) {
+            util.Message.showMessage("Update Successfull, Reload List");
+            int row = tblList.getSelectedRow();
+            LaptopDTO dto = new LaptopDTO(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
+            dao.getList().set(row, dto);
+            updateTable(dao.getList());
+        } else {
+            util.Message.showMessage("Update Failed. An error occur\n"
+                    + "CAUSTION REMEMBER : SERIAL MUST NOT BE MODIFIED");
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnEditImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditImgActionPerformed
+        // TODO add your handling code here:
+        String img;
+        try {
+            img = txtSerial.getText();
+            if (img.length() == 0) {
+                util.Message.showMessage("Please insert serial first");
+                return;
+            }
+            urlImg = getImg(img);
+            ImageLoader.loadImage(urlImg, lblImg);
+        } catch (Exception e) {
+            util.Message.showMessage("Cannot choose this file");
+        }
+    }//GEN-LAST:event_btnEditImgActionPerformed
+
+    private void chkGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkGDActionPerformed
+
+    private void txtBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBrandActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBrandActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -865,31 +1201,41 @@ public class GuestFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GuestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GuestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GuestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GuestFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new GuestFrame().setVisible(true);
+                new EditorFrame().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditImg;
+    private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSort;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JCheckBox chkDVD;
     private javax.swing.JCheckBox chkDVDSearch;
+    private javax.swing.JCheckBox chkDelete;
     private javax.swing.JCheckBox chkGD;
     private javax.swing.JCheckBox chkGDSearch;
     private javax.swing.JCheckBox chkIA;
@@ -898,6 +1244,7 @@ public class GuestFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkSBSearch;
     private javax.swing.JCheckBox chkSE;
     private javax.swing.JCheckBox chkSESearch;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -913,6 +1260,9 @@ public class GuestFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -920,15 +1270,22 @@ public class GuestFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPasswordField jPasswordField1;
+    private javax.swing.JPasswordField jPasswordField2;
+    private javax.swing.JPasswordField jPasswordField3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private java.awt.Label label1;
     private javax.swing.JLabel lblImg;
-    private javax.swing.JPanel onlImg;
+    private javax.swing.JLabel lblUser;
+    private javax.swing.JPanel pnlAdmin;
     private javax.swing.JPanel pnlDetail;
     private javax.swing.JPanel pnlFeature;
+    private javax.swing.JPanel pnlImg;
     private javax.swing.JPanel pnlInfo;
     private javax.swing.JPanel pnlInfoSearch;
     private javax.swing.JPanel pnlMajor;
+    private javax.swing.JPanel pnlManagerment;
+    private javax.swing.JPanel pnlPassword;
     private javax.swing.JPanel pnlRequirement;
     private javax.swing.JPanel pnlSearch;
     private javax.swing.JPanel pnlSort;

@@ -6,6 +6,7 @@
 package dtos;
 
 import java.io.Serializable;
+import java.util.Vector;
 
 /**
  *
@@ -14,6 +15,7 @@ import java.io.Serializable;
 public class UserDTO implements Serializable {
 
     private String user, pass, role;
+    private boolean deletable, available;
 
     public UserDTO(String user, String pass, String role) {
         this.user = user;
@@ -26,6 +28,14 @@ public class UserDTO implements Serializable {
         this.role = role;
     }
 
+    public UserDTO(String user, String pass, String role, boolean deletable, boolean available) {
+        this.user = user;
+        this.pass = pass;
+        this.role = role;
+        this.deletable = deletable;
+        this.available = available;
+    }
+
     public String getUser() {
         return user;
     }
@@ -34,13 +44,14 @@ public class UserDTO implements Serializable {
         this.user = user;
     }
 
-//    public String getPass() {
-//        return pass;
-//    }
-//
-//    public void setPass(String pass) {
-//        this.pass = pass;
-//    }
+    public String getPass() {
+        return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
+
     public String getRole() {
         return role;
     }
@@ -49,4 +60,23 @@ public class UserDTO implements Serializable {
         this.role = role;
     }
 
+    public boolean isDeletable() {
+        return deletable;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public Vector toVector() {
+        Vector v = new Vector();
+        v.add(user);
+        v.add(role);
+        v.add(isAvailable());
+        return v;
+    }
 }
