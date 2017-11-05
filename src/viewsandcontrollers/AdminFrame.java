@@ -8,13 +8,11 @@ package viewsandcontrollers;
 import util.*;
 import Comparator.*;
 import java.util.*;
-import daos.LapTopDAO;
-import dtos.LaptopDTO;
+import daos.*;
+import dtos.*;
 import java.io.File;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import util.Message;
 
 /**
  *
@@ -25,6 +23,9 @@ public class AdminFrame extends javax.swing.JFrame {
     DefaultTableModel model = null;
     LapTopDAO dao = null;
     String urlImg;
+    DefaultTableModel userModel = null;
+    UserDAO userDAO = null;
+    String account;
 
     /**
      * Creates new form Guest
@@ -40,11 +41,26 @@ public class AdminFrame extends javax.swing.JFrame {
 
     public AdminFrame(String user) {
         initComponents();
-        lblUser.setText("Administrator : " + user);
+        account = new String(user);
+        lblUser.setText(account);
+
         model = (DefaultTableModel) tblList.getModel();
         dao = new LapTopDAO();
         refreshTable("");
 
+        userModel = (DefaultTableModel) tbllUser.getModel();
+        userDAO = new UserDAO();
+        refeshUserTable();
+    }
+
+    private void refeshUserTable() {
+        userModel.setRowCount(0);
+        List<UserDTO> resuList = userDAO.showTable();
+        for (UserDTO userDTO : resuList) {
+            userModel.addRow(userDTO.toVector());
+        }
+        btnUpdateUser.setEnabled(false);
+        btnDeleteUser.setEnabled(false);
     }
 
     private void refreshTable(String request) {
@@ -53,6 +69,7 @@ public class AdminFrame extends javax.swing.JFrame {
         for (LaptopDTO laptopDTO : result) {
             model.addRow(laptopDTO.toVector());
         }
+        btnUpdate.setEnabled(false);
     }
 
     private void updateTable(List<LaptopDTO> tbl) {
@@ -61,6 +78,7 @@ public class AdminFrame extends javax.swing.JFrame {
         for (LaptopDTO laptopDTO : result) {
             model.addRow(laptopDTO.toVector());
         }
+        btnUpdate.setEnabled(false);
     }
 
     private void sortAscByName() {
@@ -172,6 +190,20 @@ public class AdminFrame extends javax.swing.JFrame {
         rdnAscPrice = new javax.swing.JRadioButton();
         rdnDecPrice = new javax.swing.JRadioButton();
         btnSort = new javax.swing.JButton();
+        pnlManagerment = new javax.swing.JPanel();
+        pnlUserManagerment = new javax.swing.JScrollPane();
+        tbllUser = new javax.swing.JTable();
+        pnlManageUser = new javax.swing.JPanel();
+        btnDeleteUser = new javax.swing.JButton();
+        btnUpdateUser = new javax.swing.JButton();
+        pnlPassword = new javax.swing.JPanel();
+        JLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        txtOldPass = new javax.swing.JPasswordField();
+        txtNewPass = new javax.swing.JPasswordField();
+        txtReNewPass = new javax.swing.JPasswordField();
+        btnNewPass = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1178, 533));
@@ -409,6 +441,7 @@ public class AdminFrame extends javax.swing.JFrame {
         pnlAdmin.add(btnEditImg);
 
         btnUpdate.setText("Update");
+        btnUpdate.setEnabled(false);
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -459,10 +492,6 @@ public class AdminFrame extends javax.swing.JFrame {
 
         pnlInfoSearch.setBorder(javax.swing.BorderFactory.createTitledBorder("Main Infor"));
 
-        txtPriceFrom.setText("2000");
-
-        txtPriceTo.setText("20000");
-
         jLabel12.setText("Brand");
 
         jLabel13.setText("Serial");
@@ -473,15 +502,15 @@ public class AdminFrame extends javax.swing.JFrame {
 
         jLabel16.setText("RAM Type");
 
-        jLabel17.setText("RAM Capacity");
+        jLabel17.setText("RAM Capacity(GB)");
 
-        jLabel18.setText("HDD Capacity");
+        jLabel18.setText("HDD Capacity(GB)");
 
-        jLabel19.setText("Screen");
+        jLabel19.setText("Screen(Inch)");
 
         jLabel20.setText("Graphic Card");
 
-        jLabel21.setText("Price");
+        jLabel21.setText("Price(thousand vnd)");
 
         jLabel11.setText("To");
 
@@ -705,6 +734,150 @@ public class AdminFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Feature", pnlFeature);
 
+        tbllUser.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "User", "Role", "Available"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbllUser.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbllUserMouseClicked(evt);
+            }
+        });
+        pnlUserManagerment.setViewportView(tbllUser);
+        if (tbllUser.getColumnModel().getColumnCount() > 0) {
+            tbllUser.getColumnModel().getColumn(0).setResizable(false);
+            tbllUser.getColumnModel().getColumn(1).setResizable(false);
+            tbllUser.getColumnModel().getColumn(2).setResizable(false);
+        }
+
+        pnlManageUser.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Manage Account", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
+        pnlManageUser.setLayout(new java.awt.GridLayout(1, 0));
+
+        btnDeleteUser.setText("Delete");
+        btnDeleteUser.setEnabled(false);
+        btnDeleteUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteUserActionPerformed(evt);
+            }
+        });
+        pnlManageUser.add(btnDeleteUser);
+
+        btnUpdateUser.setText("(Dis)Available");
+        btnUpdateUser.setEnabled(false);
+        btnUpdateUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateUserActionPerformed(evt);
+            }
+        });
+        pnlManageUser.add(btnUpdateUser);
+
+        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
+
+        JLabel23.setText("Old Password");
+
+        jLabel24.setText("New Password");
+
+        jLabel25.setText("Confirm new Password");
+
+        txtOldPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtOldPassActionPerformed(evt);
+            }
+        });
+
+        btnNewPass.setText("OK");
+        btnNewPass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewPassActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlPasswordLayout = new javax.swing.GroupLayout(pnlPassword);
+        pnlPassword.setLayout(pnlPasswordLayout);
+        pnlPasswordLayout.setHorizontalGroup(
+            pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasswordLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(JLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txtNewPass, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                    .addComponent(txtOldPass, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtReNewPass))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNewPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnlPasswordLayout.setVerticalGroup(
+            pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlPasswordLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlPasswordLayout.createSequentialGroup()
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(JLabel23)
+                            .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel24)
+                            .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel25)
+                            .addComponent(txtReNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(btnNewPass, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout pnlManagermentLayout = new javax.swing.GroupLayout(pnlManagerment);
+        pnlManagerment.setLayout(pnlManagermentLayout);
+        pnlManagermentLayout.setHorizontalGroup(
+            pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlManagermentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(pnlPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlManageUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlUserManagerment, javax.swing.GroupLayout.DEFAULT_SIZE, 675, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        pnlManagermentLayout.setVerticalGroup(
+            pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlManagermentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pnlUserManagerment, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlManageUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab("User's Managerment", pnlManagerment);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -742,7 +915,7 @@ public class AdminFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         int row = tblList.getSelectedRow();
         LaptopDTO dto = dao.getLaptopByRow(row);
-
+        btnUpdate.setEnabled(true);
         txtBrand.setText(dto.getBrand());
         txtSerial.setText(dto.getSerial());
         txtChipset.setText(dto.getChipSet());
@@ -813,12 +986,6 @@ public class AdminFrame extends javax.swing.JFrame {
             return;
         }
         String brand = txtBrandSearch.getText().toUpperCase().trim();
-//        if (brand.length() != 0) {
-//            if (!util.Tools.checkBrand(brand)) {
-//                util.Message.showMessage("Invalid Brand");
-//                return;
-//            }
-//        }
 
         String chip = txtChipsetSearch.getText().toUpperCase().trim();
         String chipSerial = txtChipsetSerialSearch.getText().toUpperCase().trim();
@@ -1056,8 +1223,8 @@ public class AdminFrame extends javax.swing.JFrame {
             util.Message.showMessage("Insert Successfull, Reload List");
             updateTable(dao.getList());
         } else {
-//            util.Message.showMessage("Update Failed. An error occur\n"
-//                    + "CAUSTION REMEMBER : SERIAL MUST NOT BE MODIFIED");
+            util.Message.showMessage("Update Failed. An error occur\n"
+                    + "CAUSTION REMEMBER : SERIAL MUST BE ALREADY EXISTED");
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
@@ -1091,6 +1258,74 @@ public class AdminFrame extends javax.swing.JFrame {
         new LoginFrame().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLogOutActionPerformed
+
+    private void txtOldPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOldPassActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtOldPassActionPerformed
+
+    private void tbllUserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbllUserMouseClicked
+        // TODO add your handling code here:
+
+        int row = tbllUser.getSelectedRow();
+        List<UserDTO> userList = userDAO.getUserList();
+        String user = userList.get(row).getUser();
+        if (user.equals("admin") || user.equals("editor")) {
+            btnUpdateUser.setEnabled(false);
+            btnDeleteUser.setEnabled(false);
+        } else {
+            btnUpdateUser.setEnabled(true);
+            btnDeleteUser.setEnabled(true);
+        }
+
+
+    }//GEN-LAST:event_tbllUserMouseClicked
+
+    private void btnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteUserActionPerformed
+        // TODO add your handling code here:
+        int row = tbllUser.getSelectedRow();
+        List<UserDTO> userList = userDAO.getUserList();
+        String user = userList.get(row).getUser();
+        boolean deleted = userDAO.delAccount(user);
+        if (deleted) {
+            util.Message.showMessage("Delete Account " + user + " succesfull");
+        } else {
+            util.Message.showMessage("Delete Account " + user + " failed");
+        }
+        refeshUserTable();
+    }//GEN-LAST:event_btnDeleteUserActionPerformed
+
+    private void btnUpdateUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateUserActionPerformed
+        // TODO add your handling code here:
+        int row = tbllUser.getSelectedRow();
+        List<UserDTO> userList = userDAO.getUserList();
+        String user = userList.get(row).getUser();
+        boolean update = userDAO.chmodAccount(user, userList.get(row).isAvailable());
+        if (update) {
+            util.Message.showMessage("Change mode Account " + user + " succesfull");
+        } else {
+            util.Message.showMessage("Change mode Account " + user + " failed");
+        }
+        refeshUserTable();
+    }//GEN-LAST:event_btnUpdateUserActionPerformed
+
+    private void btnNewPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewPassActionPerformed
+        // TODO add your handling code here:
+        String oldPass = new String(txtOldPass.getPassword());
+        String newPass = new String(txtNewPass.getPassword());
+        String reNew = new String(txtReNewPass.getPassword());
+        boolean update;
+        if (newPass.equals(reNew)) {
+            update = userDAO.chpassAccount(account, oldPass, newPass);
+            if (update) {
+                util.Message.showMessage("Change Password Account " + account + " succesfull");
+            } else {
+                util.Message.showMessage("Change Password Account " + account + " failed");
+            }
+        } else {
+            util.Message.showMessage("Please confirm exactly password in ReNew Field");
+            return;
+        }
+    }//GEN-LAST:event_btnNewPassActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1131,12 +1366,16 @@ public class AdminFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel JLabel23;
+    private javax.swing.JButton btnDeleteUser;
     private javax.swing.JButton btnEditImg;
     private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLogOut;
+    private javax.swing.JButton btnNewPass;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSort;
     private javax.swing.JButton btnUpdate;
+    private javax.swing.JButton btnUpdateUser;
     private javax.swing.JCheckBox chkDVD;
     private javax.swing.JCheckBox chkDVDSearch;
     private javax.swing.JCheckBox chkDelete;
@@ -1163,6 +1402,8 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1181,16 +1422,21 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pnlInfo;
     private javax.swing.JPanel pnlInfoSearch;
     private javax.swing.JPanel pnlMajor;
+    private javax.swing.JPanel pnlManageUser;
+    private javax.swing.JPanel pnlManagerment;
+    private javax.swing.JPanel pnlPassword;
     private javax.swing.JPanel pnlRequirement;
     private javax.swing.JPanel pnlSearch;
     private javax.swing.JPanel pnlSort;
     private javax.swing.JScrollPane pnlTbl;
     private javax.swing.JPanel pnlTile;
+    private javax.swing.JScrollPane pnlUserManagerment;
     private javax.swing.JRadioButton rdnAscPrice;
     private javax.swing.JRadioButton rdnDecPrice;
     private javax.swing.JRadioButton rdnName;
     private javax.swing.ButtonGroup sort;
     private javax.swing.JTable tblList;
+    private javax.swing.JTable tbllUser;
     private javax.swing.JTextField txtBrand;
     private javax.swing.JTextField txtBrandSearch;
     private javax.swing.JTextField txtChipset;
@@ -1201,6 +1447,8 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtGraphicCardSearch;
     private javax.swing.JTextField txtHDDCapacity;
     private javax.swing.JTextField txtHDDCapacitySearch;
+    private javax.swing.JPasswordField txtNewPass;
+    private javax.swing.JPasswordField txtOldPass;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtPriceFrom;
     private javax.swing.JTextField txtPriceTo;
@@ -1208,6 +1456,7 @@ public class AdminFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtRAMCapacitySearch;
     private javax.swing.JTextField txtRAMType;
     private javax.swing.JTextField txtRAMTypeSearch;
+    private javax.swing.JPasswordField txtReNewPass;
     private javax.swing.JTextField txtScreen;
     private javax.swing.JTextField txtScreenSearch;
     private javax.swing.JTextField txtSerial;
