@@ -23,9 +23,6 @@ public class GuestFrame extends javax.swing.JFrame {
     DefaultTableModel model = null;
     LapTopDAO dao = null;
     String urlImg;
-    DefaultTableModel userModel = null;
-    UserDAO userDAO = null;
-    String account;
 
     /**
      * Creates new form Guest
@@ -39,40 +36,24 @@ public class GuestFrame extends javax.swing.JFrame {
 
     }
 
-    public GuestFrame(String user) {
-        initComponents();
-        account = new String(user);
-        lblUser.setText(account);
-
-        model = (DefaultTableModel) tblList.getModel();
-        dao = new LapTopDAO();
-        refreshTable("");
-    }
-
-    private void refeshUserTable() {
-        userModel.setRowCount(0);
-        List<UserDTO> resuList = userDAO.showTable();
-        for (UserDTO userDTO : resuList) {
-            userModel.addRow(userDTO.toVector());
-        }
-    }
-
     private void refreshTable(String request) {
         model.setRowCount(0);
         List<LaptopDTO> result = dao.showTable(request);
         for (LaptopDTO laptopDTO : result) {
-            model.addRow(laptopDTO.toVector());
+            if (!laptopDTO.isDeleted()) {
+                model.addRow(laptopDTO.toVector());
+            }
         }
-        btnUpdate.setEnabled(false);
     }
 
     private void updateTable(List<LaptopDTO> tbl) {
         model.setRowCount(0);
         List<LaptopDTO> result = tbl;
         for (LaptopDTO laptopDTO : result) {
-            model.addRow(laptopDTO.toVector());
+            if (!laptopDTO.isDeleted()) {
+                model.addRow(laptopDTO.toVector());
+            }
         }
-        btnUpdate.setEnabled(false);
     }
 
     private void sortAscByName() {
@@ -141,11 +122,6 @@ public class GuestFrame extends javax.swing.JFrame {
         chkSB = new javax.swing.JCheckBox();
         chkIA = new javax.swing.JCheckBox();
         chkGD = new javax.swing.JCheckBox();
-        pnlAdmin = new javax.swing.JPanel();
-        chkDelete = new javax.swing.JCheckBox();
-        btnEditImg = new javax.swing.JButton();
-        btnUpdate = new javax.swing.JButton();
-        btnInsert = new javax.swing.JButton();
         pnlFeature = new javax.swing.JPanel();
         pnlSearch = new javax.swing.JPanel();
         pnlInfoSearch = new javax.swing.JPanel();
@@ -277,13 +253,33 @@ public class GuestFrame extends javax.swing.JFrame {
 
         pnlInfo.setBorder(javax.swing.BorderFactory.createTitledBorder("Main Infor"));
 
+        txtBrand.setEditable(false);
         txtBrand.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtBrandActionPerformed(evt);
             }
         });
 
+        txtSerial.setEditable(false);
+
+        txtChipset.setEditable(false);
+
+        txtChipsetSerial.setEditable(false);
+
+        txtRAMType.setEditable(false);
+
+        txtRAMCapacity.setEditable(false);
+
+        txtHDDCapacity.setEditable(false);
+
+        txtScreen.setEditable(false);
+
+        txtGraphicCard.setEditable(false);
+
+        txtPrice.setEditable(false);
+
         chkDVD.setText("DVD reader");
+        chkDVD.setEnabled(false);
 
         jLabel1.setText("Brand");
 
@@ -390,52 +386,25 @@ public class GuestFrame extends javax.swing.JFrame {
         pnlMajor.setLayout(new java.awt.GridLayout(1, 0));
 
         chkSE.setText("Software Engineering");
+        chkSE.setEnabled(false);
         pnlMajor.add(chkSE);
 
         chkSB.setText("International Bussiness");
+        chkSB.setEnabled(false);
         pnlMajor.add(chkSB);
 
         chkIA.setText("Information Assurance");
+        chkIA.setEnabled(false);
         pnlMajor.add(chkIA);
 
         chkGD.setText("Graphic Design");
+        chkGD.setEnabled(false);
         chkGD.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 chkGDActionPerformed(evt);
             }
         });
         pnlMajor.add(chkGD);
-
-        pnlAdmin.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Administrator Function", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 14))); // NOI18N
-        pnlAdmin.setLayout(new java.awt.GridLayout(1, 0));
-
-        chkDelete.setText("Deleted");
-        pnlAdmin.add(chkDelete);
-
-        btnEditImg.setText("Edit Image");
-        btnEditImg.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditImgActionPerformed(evt);
-            }
-        });
-        pnlAdmin.add(btnEditImg);
-
-        btnUpdate.setText("Update");
-        btnUpdate.setEnabled(false);
-        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnUpdateActionPerformed(evt);
-            }
-        });
-        pnlAdmin.add(btnUpdate);
-
-        btnInsert.setText("Insert");
-        btnInsert.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnInsertActionPerformed(evt);
-            }
-        });
-        pnlAdmin.add(btnInsert);
 
         javax.swing.GroupLayout pnlDetailLayout = new javax.swing.GroupLayout(pnlDetail);
         pnlDetail.setLayout(pnlDetailLayout);
@@ -448,8 +417,7 @@ public class GuestFrame extends javax.swing.JFrame {
                     .addGroup(pnlDetailLayout.createSequentialGroup()
                         .addComponent(pnlImg, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(pnlAdmin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnlDetailLayout.setVerticalGroup(
@@ -461,8 +429,6 @@ public class GuestFrame extends javax.swing.JFrame {
                     .addComponent(pnlImg, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnlMajor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -751,7 +717,6 @@ public class GuestFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         int row = tblList.getSelectedRow();
         LaptopDTO dto = dao.getLaptopByRow(row);
-        btnUpdate.setEnabled(true);
         txtBrand.setText(dto.getBrand());
         txtSerial.setText(dto.getSerial());
         txtChipset.setText(dto.getChipSet());
@@ -768,7 +733,6 @@ public class GuestFrame extends javax.swing.JFrame {
         chkSB.setSelected(dto.isForSB());
         chkIA.setSelected(dto.isForIA());
         chkGD.setSelected(dto.isForGD());
-        chkDelete.setSelected(dto.isDeleted());
 
         urlImg = new String(dto.getImg());
 
@@ -882,187 +846,9 @@ public class GuestFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jTabbedPane1MouseClicked
 
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
-        int price;
-        try {
-            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String brand = txtBrand.getText().toUpperCase().trim();
-        if (!util.Tools.checkBrand(brand)) {
-            util.Message.showMessage("Invalid Brand");
-            return;
-        }
-
-        String chip = txtChipset.getText().toUpperCase().trim();
-        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
-        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
-
-        String hdd = txtHDDCapacity.getText();
-        try {
-            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ram = txtRAMCapacity.getText();
-        try {
-            if (!util.Tools.checkRAM(ram)) {
-            }
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ramType = txtRAMType.getText().toUpperCase().trim();
-        if (!util.Tools.checkRAMType(ramType)) {
-            util.Message.showMessage("RAM Type invalid : " + ramType
-                    + "\nOnly DDR4 or DDR3 accepted");
-            return;
-        }
-
-        String screen = txtScreen.getText().toUpperCase().trim();
-        if (!util.Tools.checkScreen(screen)) {
-            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
-            return;
-        }
-
-        String serial = txtSerial.getText().toUpperCase().trim();
-        if (!util.Tools.isContain(dao.getList(), serial)) {
-            util.Message.showMessage("Serial is not existed. Cannot update");
-            return;
-        }
-
-        String img = urlImg;
-
-        boolean dvd = chkDVD.isSelected();
-        boolean del = chkDelete.isSelected();
-        if (del) {
-            int option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
-            if (option != 0) {
-                return;
-            }
-        }
-        boolean se = chkSE.isSelected();
-        boolean sb = chkSB.isSelected();
-        boolean ia = chkIA.isSelected();
-        boolean gd = chkGD.isSelected();
-        if (!se && !sb && !ia && !gd) {
-            util.Message.showMessage("Choose at least one Major");
-        }
-
-        boolean updated = dao.updateNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
-        if (updated) {
-            util.Message.showMessage("Update Successfull, Reload List");
-            int row = tblList.getSelectedRow();
-            LaptopDTO dto = new LaptopDTO(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
-            dao.getList().set(row, dto);
-            updateTable(dao.getList());
-        } else {
-            util.Message.showMessage("Update Failed. An error occur\n"
-                    + "CAUSTION REMEMBER : SERIAL MUST NOT BE MODIFIED");
-        }
-    }//GEN-LAST:event_btnUpdateActionPerformed
-
     private void txtBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBrandActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBrandActionPerformed
-
-    private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
-        // TODO add your handling code here:
-        int price;
-        try {
-            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String brand = txtBrand.getText().toUpperCase().trim();
-
-        if (!util.Tools.checkBrand(brand)) {
-            util.Message.showMessage("Invalid Brand");
-            return;
-        }
-
-        String chip = txtChipset.getText().toUpperCase().trim();
-        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
-        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
-
-        String hdd = txtHDDCapacity.getText();
-        try {
-            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ram = txtRAMCapacity.getText();
-        try {
-            if (!util.Tools.checkRAM(ram)) {
-            }
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ramType = txtRAMType.getText().toUpperCase().trim();
-        if (!util.Tools.checkRAMType(ramType)) {
-            util.Message.showMessage("RAM Type invalid : " + ramType
-                    + "\nOnly DDR4 or DDR3 accepted");
-            return;
-        }
-
-        String screen = txtScreen.getText().toUpperCase().trim();
-        if (!util.Tools.checkScreen(screen)) {
-            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
-            return;
-        }
-
-        String serial = txtSerial.getText().toUpperCase().trim();
-        if (util.Tools.isContain(dao.getList(), serial)) {
-            util.Message.showMessage("Serial already existed");
-            return;
-        }
-
-        String img = "img\\0.png";
-        int option = util.Message.confirmMessage("Do you wish to add this Laptop a picture?", "Upload Image?");
-        if (option == 0) {
-            btnEditImgActionPerformed(evt);
-            img = urlImg;
-        }
-
-        boolean dvd = chkDVD.isSelected();
-        boolean del = chkDelete.isSelected();
-        if (del) {
-            option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
-            if (option != 0) {
-                return;
-            }
-        }
-
-        boolean se = chkSE.isSelected();
-        boolean sb = chkSB.isSelected();
-        boolean ia = chkIA.isSelected();
-        boolean gd = chkGD.isSelected();
-        if (!se && !sb && !ia && !gd) {
-            util.Message.showMessage("Choose at least one Major");
-        }
-
-        boolean inserted = dao.insertNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
-        if (inserted) {
-            util.Message.showMessage("Insert Successfull, Reload List");
-            updateTable(dao.getList());
-        } else {
-            util.Message.showMessage("Update Failed. An error occur\n"
-                    + "CAUSTION REMEMBER : SERIAL MUST BE ALREADY EXISTED");
-        }
-    }//GEN-LAST:event_btnInsertActionPerformed
 
     private String getImg(String serial) {
         String img = "img\\" + serial + ".jpg";
@@ -1072,22 +858,6 @@ public class GuestFrame extends javax.swing.JFrame {
         ImageLoader.saveImage(file, img);
         return img;
     }
-
-    private void btnEditImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditImgActionPerformed
-        // TODO add your handling code here:
-        String img;
-        try {
-            img = txtSerial.getText();
-            if (img.length() == 0) {
-                util.Message.showMessage("Please insert serial first");
-                return;
-            }
-            urlImg = getImg(img);
-            ImageLoader.loadImage(urlImg, lblImg);
-        } catch (Exception e) {
-            util.Message.showMessage("Cannot load file");
-        }
-    }//GEN-LAST:event_btnEditImgActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
         // TODO add your handling code here:
@@ -1146,15 +916,11 @@ public class GuestFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnEditImg;
-    private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSort;
-    private javax.swing.JButton btnUpdate;
     private javax.swing.JCheckBox chkDVD;
     private javax.swing.JCheckBox chkDVDSearch;
-    private javax.swing.JCheckBox chkDelete;
     private javax.swing.JCheckBox chkGD;
     private javax.swing.JCheckBox chkGDSearch;
     private javax.swing.JCheckBox chkIA;
@@ -1189,7 +955,6 @@ public class GuestFrame extends javax.swing.JFrame {
     private java.awt.Label label1;
     private javax.swing.JLabel lblImg;
     private javax.swing.JLabel lblUser;
-    private javax.swing.JPanel pnlAdmin;
     private javax.swing.JPanel pnlDetail;
     private javax.swing.JPanel pnlFeature;
     private javax.swing.JPanel pnlImg;
