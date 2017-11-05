@@ -790,7 +790,7 @@ public class AdminFrame extends javax.swing.JFrame {
         });
         pnlManageUser.add(btnUpdateUser);
 
-        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
+        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set This Account Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
 
         JLabel23.setText("Old Password");
 
@@ -1249,13 +1249,13 @@ public class AdminFrame extends javax.swing.JFrame {
             urlImg = getImg(img);
             ImageLoader.loadImage(urlImg, lblImg);
         } catch (Exception e) {
-            util.Message.showMessage("Cannot choose this file");
+            util.Message.showMessage("Cannot load file");
         }
     }//GEN-LAST:event_btnEditImgActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
         // TODO add your handling code here:
-        new LoginFrame().setVisible(true);
+        new LogInFrame().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnLogOutActionPerformed
 
@@ -1269,7 +1269,7 @@ public class AdminFrame extends javax.swing.JFrame {
         int row = tbllUser.getSelectedRow();
         List<UserDTO> userList = userDAO.getUserList();
         String user = userList.get(row).getUser();
-        if (user.equals("admin") || user.equals("editor")) {
+        if (user.equals("admin")) {
             btnUpdateUser.setEnabled(false);
             btnDeleteUser.setEnabled(false);
         } else {

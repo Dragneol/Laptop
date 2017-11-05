@@ -23,7 +23,8 @@ public class EditorFrame extends javax.swing.JFrame {
     DefaultTableModel model = null;
     LapTopDAO dao = null;
     String urlImg;
-    String account;
+    UserDAO userDAO = new UserDAO();
+    UserDTO userDTO = null;
 
     /**
      * Creates new form Guest
@@ -39,8 +40,9 @@ public class EditorFrame extends javax.swing.JFrame {
 
     public EditorFrame(String user) {
         initComponents();
-        account = new String(user);
-        lblUser.setText(account);
+
+        lblUser.setText(user);
+        userDTO = userDAO.getAccountByUser(user);
 
         model = (DefaultTableModel) tblList.getModel();
         dao = new LapTopDAO();
@@ -53,6 +55,7 @@ public class EditorFrame extends javax.swing.JFrame {
         for (LaptopDTO laptopDTO : result) {
             model.addRow(laptopDTO.toVector());
         }
+        btnUpdate.setEnabled(false);
     }
 
     private void updateTable(List<LaptopDTO> tbl) {
@@ -61,6 +64,7 @@ public class EditorFrame extends javax.swing.JFrame {
         for (LaptopDTO laptopDTO : result) {
             model.addRow(laptopDTO.toVector());
         }
+        btnUpdate.setEnabled(false);
     }
 
     private void sortAscByName() {
@@ -174,13 +178,13 @@ public class EditorFrame extends javax.swing.JFrame {
         btnSort = new javax.swing.JButton();
         pnlManagerment = new javax.swing.JPanel();
         pnlPassword = new javax.swing.JPanel();
-        jLabel23 = new javax.swing.JLabel();
+        JLabel23 = new javax.swing.JLabel();
         jLabel24 = new javax.swing.JLabel();
         jLabel25 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jPasswordField2 = new javax.swing.JPasswordField();
-        jPasswordField3 = new javax.swing.JPasswordField();
-        jButton1 = new javax.swing.JButton();
+        txtOldPass = new javax.swing.JPasswordField();
+        txtNewPass = new javax.swing.JPasswordField();
+        txtReNewPass = new javax.swing.JPasswordField();
+        btnNewPass = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1178, 533));
@@ -418,6 +422,7 @@ public class EditorFrame extends javax.swing.JFrame {
         pnlAdmin.add(btnEditImg);
 
         btnUpdate.setText("Update");
+        btnUpdate.setEnabled(false);
         btnUpdate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUpdateActionPerformed(evt);
@@ -478,15 +483,15 @@ public class EditorFrame extends javax.swing.JFrame {
 
         jLabel16.setText("RAM Type");
 
-        jLabel17.setText("RAM Capacity");
+        jLabel17.setText("RAM Capacity(GB)");
 
-        jLabel18.setText("HDD Capacity");
+        jLabel18.setText("HDD Capacity(GB)");
 
-        jLabel19.setText("Screen");
+        jLabel19.setText("Screen(Inch)");
 
         jLabel20.setText("Graphic Card");
 
-        jLabel21.setText("Price");
+        jLabel21.setText("Price(thousand vnd)");
 
         jLabel11.setText("To");
 
@@ -710,24 +715,24 @@ public class EditorFrame extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Feature", pnlFeature);
 
-        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
+        pnlPassword.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Set This Account Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 3, 13))); // NOI18N
 
-        jLabel23.setText("Old Password");
+        JLabel23.setText("Old Password");
 
         jLabel24.setText("New Password");
 
         jLabel25.setText("Confirm new Password");
 
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        txtOldPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                txtOldPassActionPerformed(evt);
             }
         });
 
-        jButton1.setText("OK");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnNewPass.setText("OK");
+        btnNewPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnNewPassActionPerformed(evt);
             }
         });
 
@@ -740,36 +745,34 @@ public class EditorFrame extends javax.swing.JFrame {
                 .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel25, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                     .addComponent(jLabel24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(JLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPasswordField2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPasswordField3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(txtNewPass, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
+                        .addComponent(txtOldPass, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(txtReNewPass)))
                 .addContainerGap())
         );
         pnlPasswordLayout.setVerticalGroup(
             pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPasswordLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnlPasswordLayout.createSequentialGroup()
-                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel23)
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel24)
-                            .addComponent(jPasswordField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel25)
-                            .addComponent(jPasswordField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(JLabel23)
+                    .addComponent(txtOldPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24)
+                    .addComponent(txtNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlPasswordLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel25)
+                    .addComponent(txtReNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnNewPass, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlManagermentLayout = new javax.swing.GroupLayout(pnlManagerment);
@@ -785,8 +788,8 @@ public class EditorFrame extends javax.swing.JFrame {
             pnlManagermentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlManagermentLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(363, Short.MAX_VALUE))
+                .addComponent(pnlPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("User's Managerment", pnlManagerment);
@@ -820,11 +823,15 @@ public class EditorFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void chkGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkGDActionPerformed
+
     private void tblListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListMouseClicked
         // TODO add your handling code here:
         int row = tblList.getSelectedRow();
         LaptopDTO dto = dao.getLaptopByRow(row);
-
+        btnUpdate.setEnabled(true);
         txtBrand.setText(dto.getBrand());
         txtSerial.setText(dto.getSerial());
         txtChipset.setText(dto.getChipSet());
@@ -852,40 +859,21 @@ public class EditorFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblListMouseClicked
 
-    private String getImg(String serial) {
-        String img = "img\\" + serial + ".jpg";
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.showOpenDialog(this);
-        File file = fileChooser.getSelectedFile();
-        ImageLoader.saveImage(file, img);
-        return img;
-    }
-
-    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+    private void chkGDSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDSearchActionPerformed
         // TODO add your handling code here:
-        new LoginFrame().setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnLogOutActionPerformed
-
-    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
-
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_chkGDSearchActionPerformed
 
     private void btnSortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSortActionPerformed
         // TODO add your handling code here:
 
         if (rdnName.isSelected()) {
-            //            refreshTable("Order by Brand, Serial");
+//            refreshTable("Order by Brand, Serial");
             sortAscByName();
         } else if (rdnAscPrice.isSelected()) {
-            //            refreshTable("Order by Price ASC");
+//            refreshTable("Order by Price ASC");
             sortAscByPrice();
         } else {
-            //            refreshTable("Order by Price DESC");
+//            refreshTable("Order by Price DESC");
             sortDesByPrice();
         }
     }//GEN-LAST:event_btnSortActionPerformed
@@ -914,12 +902,6 @@ public class EditorFrame extends javax.swing.JFrame {
             return;
         }
         String brand = txtBrandSearch.getText().toUpperCase().trim();
-        //        if (brand.length() != 0) {
-        //            if (!util.Tools.checkBrand(brand)) {
-        //                util.Message.showMessage("Invalid Brand");
-        //                return;
-        //            }
-        //        }
 
         String chip = txtChipsetSearch.getText().toUpperCase().trim();
         String chipSerial = txtChipsetSerialSearch.getText().toUpperCase().trim();
@@ -974,9 +956,102 @@ public class EditorFrame extends javax.swing.JFrame {
         util.Message.showMessage("Searched!\n" + dao.getList().size() + " Laptop found!");
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void chkGDSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDSearchActionPerformed
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_chkGDSearchActionPerformed
+
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        // TODO add your handling code here:
+        int price;
+        try {
+            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String brand = txtBrand.getText().toUpperCase().trim();
+        if (!util.Tools.checkBrand(brand)) {
+            util.Message.showMessage("Invalid Brand");
+            return;
+        }
+
+        String chip = txtChipset.getText().toUpperCase().trim();
+        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
+        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
+
+        String hdd = txtHDDCapacity.getText();
+        try {
+            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ram = txtRAMCapacity.getText();
+        try {
+            if (!util.Tools.checkRAM(ram)) {
+            }
+        } catch (Exception e) {
+            util.Message.showMessage(e.getMessage());
+            return;
+        }
+
+        String ramType = txtRAMType.getText().toUpperCase().trim();
+        if (!util.Tools.checkRAMType(ramType)) {
+            util.Message.showMessage("RAM Type invalid : " + ramType
+                    + "\nOnly DDR4 or DDR3 accepted");
+            return;
+        }
+
+        String screen = txtScreen.getText().toUpperCase().trim();
+        if (!util.Tools.checkScreen(screen)) {
+            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
+            return;
+        }
+
+        String serial = txtSerial.getText().toUpperCase().trim();
+        if (!util.Tools.isContain(dao.getList(), serial)) {
+            util.Message.showMessage("Serial is not existed. Cannot update");
+            return;
+        }
+
+        String img = urlImg;
+
+        boolean dvd = chkDVD.isSelected();
+        boolean del = chkDelete.isSelected();
+        if (del) {
+            int option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
+            if (option != 0) {
+                return;
+            }
+        }
+        boolean se = chkSE.isSelected();
+        boolean sb = chkSB.isSelected();
+        boolean ia = chkIA.isSelected();
+        boolean gd = chkGD.isSelected();
+        if (!se && !sb && !ia && !gd) {
+            util.Message.showMessage("Choose at least one Major");
+        }
+
+        boolean updated = dao.updateNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
+        if (updated) {
+            util.Message.showMessage("Update Successfull, Reload List");
+            int row = tblList.getSelectedRow();
+            LaptopDTO dto = new LaptopDTO(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
+            dao.getList().set(row, dto);
+            updateTable(dao.getList());
+        } else {
+            util.Message.showMessage("Update Failed. An error occur\n"
+                    + "CAUSTION REMEMBER : SERIAL MUST NOT BE MODIFIED");
+        }
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void txtBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBrandActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtBrandActionPerformed
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         // TODO add your handling code here:
@@ -1069,92 +1144,14 @@ public class EditorFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
-    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
-        // TODO add your handling code here:
-        int price;
-        try {
-            price = util.Tools.getInt(txtPrice.getText(), 1000, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String brand = txtBrand.getText().toUpperCase().trim();
-        if (!util.Tools.checkBrand(brand)) {
-            util.Message.showMessage("Invalid Brand");
-            return;
-        }
-
-        String chip = txtChipset.getText().toUpperCase().trim();
-        String chipSerial = txtChipsetSerial.getText().toUpperCase().trim();
-        String graphicCard = txtGraphicCard.getText().toUpperCase().trim();
-
-        String hdd = txtHDDCapacity.getText();
-        try {
-            util.Tools.getInt(hdd, 500, Integer.MAX_VALUE);
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ram = txtRAMCapacity.getText();
-        try {
-            if (!util.Tools.checkRAM(ram)) {
-            }
-        } catch (Exception e) {
-            util.Message.showMessage(e.getMessage());
-            return;
-        }
-
-        String ramType = txtRAMType.getText().toUpperCase().trim();
-        if (!util.Tools.checkRAMType(ramType)) {
-            util.Message.showMessage("RAM Type invalid : " + ramType
-                    + "\nOnly DDR4 or DDR3 accepted");
-            return;
-        }
-
-        String screen = txtScreen.getText().toUpperCase().trim();
-        if (!util.Tools.checkScreen(screen)) {
-            util.Message.showMessage("Screen solution accepted only 13, 14, 15.6, 17.3");
-            return;
-        }
-
-        String serial = txtSerial.getText().toUpperCase().trim();
-        if (!util.Tools.isContain(dao.getList(), serial)) {
-            util.Message.showMessage("Serial is not existed. Cannot update");
-            return;
-        }
-
-        String img = urlImg;
-
-        boolean dvd = chkDVD.isSelected();
-        boolean del = chkDelete.isSelected();
-        if (del) {
-            int option = util.Message.confirmMessage("Do you wish to delete this Laptop?", "Delete this Laptop?");
-            if (option != 0) {
-                return;
-            }
-        }
-        boolean se = chkSE.isSelected();
-        boolean sb = chkSB.isSelected();
-        boolean ia = chkIA.isSelected();
-        boolean gd = chkGD.isSelected();
-        if (!se && !sb && !ia && !gd) {
-            util.Message.showMessage("Choose at least one Major");
-        }
-
-        boolean updated = dao.updateNewLaptop(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
-        if (updated) {
-            util.Message.showMessage("Update Successfull, Reload List");
-            int row = tblList.getSelectedRow();
-            LaptopDTO dto = new LaptopDTO(brand, serial, chip, chipSerial, ramType, ram, hdd, graphicCard, screen, img, price, se, sb, ia, gd, dvd, del);
-            dao.getList().set(row, dto);
-            updateTable(dao.getList());
-        } else {
-            util.Message.showMessage("Update Failed. An error occur\n"
-                    + "CAUSTION REMEMBER : SERIAL MUST NOT BE MODIFIED");
-        }
-    }//GEN-LAST:event_btnUpdateActionPerformed
+    private String getImg(String serial) {
+        String img = "img\\" + serial + ".jpg";
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.showOpenDialog(this);
+        File file = fileChooser.getSelectedFile();
+        ImageLoader.saveImage(file, img);
+        return img;
+    }
 
     private void btnEditImgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditImgActionPerformed
         // TODO add your handling code here:
@@ -1168,21 +1165,45 @@ public class EditorFrame extends javax.swing.JFrame {
             urlImg = getImg(img);
             ImageLoader.loadImage(urlImg, lblImg);
         } catch (Exception e) {
-            util.Message.showMessage("Cannot choose this file");
+            util.Message.showMessage("Cannot load file");
         }
     }//GEN-LAST:event_btnEditImgActionPerformed
 
-    private void chkGDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkGDActionPerformed
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chkGDActionPerformed
+        new LogInFrame().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLogOutActionPerformed
 
-    private void txtBrandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBrandActionPerformed
+    private void btnNewPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewPassActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtBrandActionPerformed
+        String account = userDTO.getUser();
+        String oldPass = new String(txtOldPass.getPassword());
+        String newPass = new String(txtNewPass.getPassword());
+        String reNew = new String(txtReNewPass.getPassword());
+        boolean update;
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (userDTO.getPass().equals(oldPass)) {
+            if (newPass.equals(reNew)) {
+                update = userDAO.chpassAccount(account, oldPass, newPass);
+                if (update) {
+                    util.Message.showMessage("Change Password Account " + account + " succesfull");
+                } else {
+                    util.Message.showMessage("Change Password Account " + account + " failed");
+                }
+            } else {
+                util.Message.showMessage("Please confirm exactly password in ReNew Field");
+                return;
+            }
+        } else {
+            util.Message.showMessage("Password incorrect");
+            return;
+        }
+    }//GEN-LAST:event_btnNewPassActionPerformed
+
+    private void txtOldPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtOldPassActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_txtOldPassActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1227,9 +1248,11 @@ public class EditorFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel JLabel23;
     private javax.swing.JButton btnEditImg;
     private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnLogOut;
+    private javax.swing.JButton btnNewPass;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSort;
     private javax.swing.JButton btnUpdate;
@@ -1244,7 +1267,6 @@ public class EditorFrame extends javax.swing.JFrame {
     private javax.swing.JCheckBox chkSBSearch;
     private javax.swing.JCheckBox chkSE;
     private javax.swing.JCheckBox chkSESearch;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1260,7 +1282,6 @@ public class EditorFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel3;
@@ -1270,9 +1291,6 @@ public class EditorFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField2;
-    private javax.swing.JPasswordField jPasswordField3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private java.awt.Label label1;
     private javax.swing.JLabel lblImg;
@@ -1306,6 +1324,8 @@ public class EditorFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtGraphicCardSearch;
     private javax.swing.JTextField txtHDDCapacity;
     private javax.swing.JTextField txtHDDCapacitySearch;
+    private javax.swing.JPasswordField txtNewPass;
+    private javax.swing.JPasswordField txtOldPass;
     private javax.swing.JTextField txtPrice;
     private javax.swing.JTextField txtPriceFrom;
     private javax.swing.JTextField txtPriceTo;
@@ -1313,6 +1333,7 @@ public class EditorFrame extends javax.swing.JFrame {
     private javax.swing.JTextField txtRAMCapacitySearch;
     private javax.swing.JTextField txtRAMType;
     private javax.swing.JTextField txtRAMTypeSearch;
+    private javax.swing.JPasswordField txtReNewPass;
     private javax.swing.JTextField txtScreen;
     private javax.swing.JTextField txtScreenSearch;
     private javax.swing.JTextField txtSerial;

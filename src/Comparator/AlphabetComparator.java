@@ -13,7 +13,7 @@ public class AlphabetComparator implements Comparator {
         LaptopDTO lp1 = (LaptopDTO) o1;
         LaptopDTO lp2 = (LaptopDTO) o2;
         int result = lp1.getBrand().compareToIgnoreCase(lp2.getBrand());
-        if (result != 0) {
+        if (result == 0) {
             result = lp1.getSerial().compareToIgnoreCase(lp2.getSerial());
         }
         return result;

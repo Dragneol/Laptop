@@ -152,4 +152,41 @@ public class UserDAO implements Serializable {
         }
         return success;
     }
+
+    public UserDTO getAccountByUser(String account) {
+        UserDTO dto = null;
+        try {
+            String sql = "select Password from tbl_User where Username = ?";
+            connection = db.DatabseConnector.getConnection("Laptop", "sa", "123");
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, account);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                String pass = resultSet.getString("Password");
+                dto = new UserDTO(account, pass);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return dto;
+    }
+
+    public boolean inserNew(UserDTO dto) {
+        boolean success = false;
+        try {
+            String sql = "insert into tbl_User values (?,?,'Editor','1','0')";
+            connection = db.DatabseConnector.getConnection("Laptop", "sa", "123");
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, dto.getUser());
+            preparedStatement.setString(2, dto.getPass());
+            success = preparedStatement.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
+        }
+        return success;
+    }
 }
